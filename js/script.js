@@ -39,6 +39,7 @@ function titleClickHandler(event) {
 
     /* add class 'active' to the correct article */
     selectedArticle.classList.add('active');
+
 }
 
 const links = document.querySelectorAll('.titles a');
@@ -46,3 +47,40 @@ const links = document.querySelectorAll('.titles a');
 for (let link of links) {
     link.addEventListener('click', titleClickHandler);
 }
+
+generateTitleLinks();
+
+function generateTitleLinks() {
+    /* Remove links from the sidebar list */
+    let linkList = document.getElementsByClassName('list titles');
+    linkList[0].innerHTML = '';
+
+    /* Find each post id and save it */
+    const posts = document.querySelectorAll('.post');
+    const postIdArray = [];
+    for (let post of posts) {
+        postIdArray.push(post.id);
+    }
+
+    /* Find each post title and save it */
+    const postTitles = document.querySelectorAll('.post-title');
+    const postTitleArray = [];
+    for (let title of postTitles) {
+        postTitleArray.push(title.innerHTML);
+    }
+
+    /* Create HTML code of the link, save all to an array */
+    const linksInHTML = [];
+    for (let i = 0; i < posts.length; i++) {
+        linksInHTML.push(
+            '<li><a href="#' + postIdArray[i] + '"><span>' + postTitleArray[i] + '</span></a></li>'
+        );
+    }
+
+    /* Inject new links into HTML */
+    for (let link of linksInHTML) {
+        linkList[0].innerHTML += link;
+    }
+}
+
+
