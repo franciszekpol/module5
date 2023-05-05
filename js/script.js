@@ -25,12 +25,20 @@ function titleClickHandler(event) {
     }
 
     /* get 'href' attribute from the clicked link */
-    const hrefAttribute = clickedElement.getAttribute('href'); 
-    console.log(hrefAttribute);
+    const hrefAttribute = clickedElement.getAttribute('href').slice(1);
 
     /* find the correct article using the selector (value of 'href' attribute) */
+    const articles = document.querySelectorAll('.post');
+    let selectedArticle;
+
+    for (let article of articles) {
+        if (article.id == hrefAttribute) {
+            selectedArticle = article;
+        }
+    }
 
     /* add class 'active' to the correct article */
+    selectedArticle.classList.add('active');
 }
 
 const links = document.querySelectorAll('.titles a');
