@@ -42,13 +42,6 @@ function titleClickHandler(event) {
 
 }
 
-const links = document.querySelectorAll('.titles a');
-
-for (let link of links) {
-    link.addEventListener('click', titleClickHandler);
-}
-
-generateTitleLinks();
 
 function generateTitleLinks() {
     /* Remove links from the sidebar list */
@@ -81,6 +74,12 @@ function generateTitleLinks() {
     for (let link of linksInHTML) {
         linkList[0].innerHTML += link;
     }
+
+    const links = document.querySelectorAll('.titles a');
+
+    for (let link of links) {
+        link.addEventListener('click', titleClickHandler);
+    }
 }
 
-
+generateTitleLinks();
