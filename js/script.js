@@ -110,9 +110,7 @@ function generateTags() {
         /* split tags into array */
         const tagsArray = tags.split(' ');
 
-        /* Create an array of tag links*/
         let tagLinks = '';
-
         /* START LOOP: for each tag */
         for (let tag of tagsArray) {
             /* generate HTML of the link */
@@ -122,6 +120,7 @@ function generateTags() {
             /* END LOOP: for each tag */
         }
         /* insert HTML of all the links into the tags wrapper */
+        // Tutaj nie wiedzialem jak inaczej "dostac sie" do taga <ul class="list list-horizontal">
         lists[postId].innerHTML += tagLinks;
         postId++;
         /* END LOOP: for every article: */
