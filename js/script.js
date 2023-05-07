@@ -111,14 +111,14 @@ function generateTags() {
         const tagsArray = tags.split(' ');
 
         /* Create an array of tag links*/
-        const tagLinks = [];
+        let tagLinks = '';
 
         /* START LOOP: for each tag */
         for (let tag of tagsArray) {
             /* generate HTML of the link */
             /* add generated code to html variable */
-            tagLinks.push('<li><a href="#tag-' + tag +
-                '">' + tag + '</a></li>');
+            tagLinks += ('<li><a href="#tag-' + tag +
+                '">' + tag + '</a></li> ');
             /* END LOOP: for each tag */
         }
         /* insert HTML of all the links into the tags wrapper */
