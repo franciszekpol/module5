@@ -8,7 +8,7 @@ const optArticleSelector = '.post',
 function titleClickHandler(event) {
     event.preventDefault();
     const clickedElement = this;
-    console.log('Link was clicked!');
+    // console.log('Link was clicked!');
 
     /* remove class 'active' from all article links */
     const activeLinks = document.querySelectorAll('.titles a.active');
@@ -18,7 +18,7 @@ function titleClickHandler(event) {
     }
 
     /* add class 'active' to the clicked link */
-    console.log('clickedElement:', clickedElement);
+    // console.log('clickedElement:', clickedElement);
 
     clickedElement.classList.add('active');
 
@@ -41,34 +41,23 @@ function titleClickHandler(event) {
 
 function generateTitleLinks() {
     /* Remove links from the sidebar list */
-    let linkList = document.getElementsByClassName('list titles');
-    linkList[0].innerHTML = '';
+    let linkList = document.querySelector("ul.list.titles");
+    linkList.innerHTML = '';
 
-    /* Find each post id and save it */
     const posts = document.querySelectorAll('.post');
-    const postIdArray = [];
+
     for (let post of posts) {
-        postIdArray.push(post.id);
-    }
+        /* Find each post id and save it */
+        const href = post.id;
 
-    /* Find each post title and save it */
-    const postTitles = document.querySelectorAll('.post-title');
-    const postTitleArray = [];
-    for (let title of postTitles) {
-        postTitleArray.push(title.innerHTML);
-    }
+        /* Find each post title and save it */
+        const postTitle = (post.querySelector('.post-title').innerHTML);
 
-    /* Create HTML code of the link, save all to an array */
-    const linksInHTML = [];
-    for (let i = 0; i < posts.length; i++) {
-        linksInHTML.push(
-            '<li><a href="#' + postIdArray[i] + '"><span>' + postTitleArray[i] + '</span></a></li>'
-        );
-    }
+        /* Create HTML code of the link */
+        const html = '<li><a href="#' + href + '"><span>' + postTitle + '</span></a></li>';
 
-    /* Inject new links into HTML */
-    for (let link of linksInHTML) {
-        linkList[0].innerHTML += link;
+        /* Inject new links into HTML */
+        linkList.innerHTML += html;
     }
 
     const links = document.querySelectorAll('.titles a');
