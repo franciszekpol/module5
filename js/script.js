@@ -33,20 +33,11 @@ function titleClickHandler(event) {
     const hrefAttribute = clickedElement.getAttribute('href').slice(1);
 
     /* find the correct article using the selector (value of 'href' attribute) */
-    const articles = document.querySelectorAll('.post');
-    let selectedArticle;
-
-    for (let article of articles) {
-        if (article.id == hrefAttribute) {
-            selectedArticle = article;
-        }
-    }
+    const selectedArticle = document.getElementById(hrefAttribute);
 
     /* add class 'active' to the correct article */
     selectedArticle.classList.add('active');
-
 }
-
 
 function generateTitleLinks() {
     /* Remove links from the sidebar list */
@@ -92,8 +83,6 @@ generateTitleLinks();
 function generateTags() {
     /* find all articles */
     const posts = document.querySelectorAll('.post');
-    // console.log(posts);
-
 
     let postId = 0;
     const lists = document.querySelectorAll('.list-horizontal')
@@ -128,3 +117,51 @@ function generateTags() {
 }
 
 generateTags();
+
+function tagClickHandler(event) {
+    /* prevent default action for this event */
+    event.preventDefault();
+
+    /* make new constant named "clickedElement" and give it the value of "this" */
+    const clickedElement = this;
+    console.log('Tag was clicked!');
+
+    /* make a new constant "href" and read the attribute "href" of the clicked element */
+    const href = this.getAttribute('href');
+
+    /* make a new constant "tag" and extract tag from the "href" constant */
+    const tag = href.replace('#tag-', '');
+    console.log(tag);
+
+    /* find all tag links with class active */
+
+    /* START LOOP: for each active tag link */
+
+    /* remove class active */
+
+    /* END LOOP: for each active tag link */
+
+    /* find all tag links with "href" attribute equal to the "href" constant */
+
+    /* START LOOP: for each found tag link */
+
+    /* add class active */
+
+    /* END LOOP: for each found tag link */
+
+    /* execute function "generateTitleLinks" with article selector as argument */
+}
+
+function addClickListenersToTags() {
+    /* find all links to tags */
+    const links = document.querySelectorAll('.post-tags a');
+
+    /* START LOOP: for each link */
+    /* add tagClickHandler as event listener for that link */
+    /* END LOOP: for each link */
+    for (let link of links) {
+        link.addEventListener('click', tagClickHandler);
+    }
+}
+
+addClickListenersToTags();
