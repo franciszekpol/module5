@@ -4,7 +4,8 @@ const optArticleSelector = '.post',
   optTitleSelector = '.post-title',
   optTitleListSelector = '.titles',
   optArticleTagsSelector = '.post-tags .list',
-  optArticleAuthorSelector = '.post-author';
+  optArticleAuthorSelector = '.post-author',
+  optTagsListSelector = '.tags.list';
 
 function titleClickHandler(event) {
   event.preventDefault();
@@ -70,6 +71,9 @@ function generateTitleLinks(customSelector = '') {
 generateTitleLinks();
 
 function generateTags() {
+  /* create a new variable allTags with an empty array */
+  let allTags = [];
+
   /* find all articles */
   const articles = document.querySelectorAll(optArticleSelector);
 
@@ -88,13 +92,25 @@ function generateTags() {
     for (let tag of tagsArray) {
       /* generate HTML of the link */
       /* add generated code to html variable */
-      html += '<li><a href="#tag-' + tag + '">' + tag + '</a></li> ';
+      html = '<li><a href="#tag-' + tag + '">' + tag + '</a></li> ';
+
+      /* check if this link is NOT already in allTags */
+      if (allTags.indexOf(html) == -1) {
+        /* add generated code into the tags wrapper */
+        allTags.push(html);
+      }
       /* END LOOP: for each tag */
     }
     /* insert HTML of all the links into the tags wrapper */
     article.querySelector(optArticleTagsSelector).innerHTML += html;
     /* END LOOP: for every article: */
   }
+
+  /* find list of tags in the right column */
+  const tagList = document.querySelector(optTagsListSelector);
+
+  /* add html from allTags to tagList */
+  tagList.innerHTML = allTags.join(' ');
 }
 
 generateTags();
@@ -131,11 +147,9 @@ function authorClickHandler(event) {
 
   /* make a new constant "href" and read the attribute "href" of the clicked element */
   const href = clickedElement.getAttribute('href');
-  console.log('href: ' + href);
 
   /* make a new constant "author" and extract the author from the "href" constant */
   const author = href.replace('#author-', '');
-  console.log(author);
 
   generateTitleLinks('[data-author~="' + author + '"]');
 }
@@ -153,7 +167,6 @@ function tagClickHandler(event) {
 
   /* make a new constant "tag" and extract tag from the "href" constant */
   const tag = href.replace('#tag-', '');
-  console.log(tag);
 
   /* find all tag links with class active */
 
