@@ -1,14 +1,16 @@
 'use strict';
 
-const optArticleSelector = '.post',
-  optTitleSelector = '.post-title',
-  optTitleListSelector = '.titles',
-  optArticleTagsSelector = '.post-tags .list',
-  optArticleAuthorSelector = '.post-author',
-  optTagsListSelector = '.tags.list',
-  optCloudClassCount = '5',
-  optCloudClassPrefix = 'tag-size-',
-  optAuthorSidebarList = '.list.authors';
+const opts = {
+  articleSelector: '.post',
+  titleSelector: '.post-title',
+  titleListSelector: '.titles',
+  articleTagsSelector: '.post-tags .list',
+  articleAuthorSelector: '.post-author',
+  tagsListSelector: '.tags.list',
+  cloudClassCount: '5',
+  cloudClassPrefix: 'tag-size-',
+  authorsListSelector: '.list.authors'
+};
 
 function titleClickHandler(event) {
   event.preventDefault();
@@ -43,17 +45,17 @@ function titleClickHandler(event) {
 
 function generateTitleLinks(customSelector = '') {
   /* Remove links from the sidebar list */
-  let linkList = document.querySelector(optTitleListSelector);
+  let linkList = document.querySelector(opts.titleListSelector);
   linkList.innerHTML = '';
 
-  const articles = document.querySelectorAll(optArticleSelector + customSelector);
+  const articles = document.querySelectorAll(opts.articleSelector + customSelector);
 
   for (let article of articles) {
     /* Find each post id and save it */
     const href = article.id;
 
     /* Find each post title and save it */
-    const articleTitle = article.querySelector(optTitleSelector).innerHTML;
+    const articleTitle = article.querySelector(opts.titleSelector).innerHTML;
 
     /* Create HTML code of the link */
     const html =
@@ -88,9 +90,9 @@ function calculateTagClass(count, params) {
   const normalizedCount = count - params.min;
   const normalizedMax = params.max - params.min;
   const percentage = normalizedCount / normalizedMax;
-  const classNumber = Math.floor(percentage * (optCloudClassCount - 1) + 1);
+  const classNumber = Math.floor(percentage * (opts.cloudClassCount - 1) + 1);
 
-  return `${optCloudClassPrefix}${classNumber}`;
+  return `${opts.cloudClassPrefix}${classNumber}`;
 }
 
 function generateTags() {
@@ -98,7 +100,7 @@ function generateTags() {
   let allTags = {};
 
   /* find all articles */
-  const articles = document.querySelectorAll(optArticleSelector);
+  const articles = document.querySelectorAll(opts.articleSelector);
 
   /* START LOOP: for every article: */
   for (let article of articles) {
@@ -127,12 +129,12 @@ function generateTags() {
       /* END LOOP: for each tag */
     }
     /* insert HTML of all the links into the tags wrapper */
-    article.querySelector(optArticleTagsSelector).innerHTML = html;
+    article.querySelector(opts.articleTagsSelector).innerHTML = html;
     /* END LOOP: for every article: */
   }
 
   /* find list of tags in the right column */
-  const tagList = document.querySelector(optTagsListSelector);
+  const tagList = document.querySelector(opts.tagsListSelector);
 
   /* create variable for all links HTML code */
   const tagsParams = calculateTagsParams(allTags);
@@ -152,13 +154,13 @@ function generateTags() {
 generateTags();
 
 function generateAuthors() {
-  const articles = document.querySelectorAll(optArticleSelector);
+  const articles = document.querySelectorAll(opts.articleSelector);
 
   /* Add authors to articles */
   for (let article of articles) {
     const author = article.getAttribute('data-author');
     let html = `<a href="#author-${author}">${author.replace('-', ' ')}</a>`;
-    article.querySelector(optArticleAuthorSelector).innerHTML += html;
+    article.querySelector(opts.articleAuthorSelector).innerHTML += html;
   }
 
   /* Add authors to the sidebar list */
@@ -172,7 +174,7 @@ function generateAuthors() {
     }
   }
 
-  const authorList = document.querySelector(optAuthorSidebarList);
+  const authorList = document.querySelector(opts.authorsListSelector);
   let authorsSidebarHTML = '';
   for (let author in allAuthors) {
     authorsSidebarHTML += `<li><a href="#author-${author.replace(' ', '-')}" class="author">${author} (${allAuthors[author]})</a></li> `;
@@ -186,7 +188,7 @@ generateAuthors();
 
 function addClickListenersToAuthors() {
   /* Add click listeners to authors in articles */
-  const articles = document.querySelectorAll(optArticleSelector);
+  const articles = document.querySelectorAll(opts.articleSelector);
 
   for (let article of articles) {
     let link = article.querySelector('a');
@@ -250,13 +252,20 @@ function tagClickHandler(event) {
 }
 
 function addClickListenersToTags() {
-  /* find all links to tags */
-  const links = document.querySelectorAll('.post-tags a');
+  /* find all links to tags in articles*/
+  let links = document.querySelectorAll('.post-tags a');
 
   /* START LOOP: for each link */
-  /* add tagClickHandler as event listener for that link */
-  /* END LOOP: for each link */
   for (let link of links) {
+    /* add tagClickHandler as event listener for that link */
+    link.addEventListener('click', tagClickHandler);
+  }
+  /* END LOOP: for each link */
+
+  /* find all links to tags on the sidebar*/
+  let sidebarLinks = document.querySelectorAll('.list.tags a');
+
+  for (let link of sidebarLinks) {
     link.addEventListener('click', tagClickHandler);
   }
 }
