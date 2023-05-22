@@ -1,5 +1,12 @@
 'use strict';
 
+const templates = {
+  listLink: Handlebars.compile(document.querySelector('#template-list-link').innerHTML),
+  authorLink: Handlebars.compile(document.querySelector('#template-author-link').innerHTML),
+  tagCloudLink: Handlebars.compile(document.querySelector('#template-tag-cloud-link').innerHTML),
+  authorListLink: Handlebars.compile(document.querySelector('#template-author-list-link').innerHTML)
+};
+
 const opts = {
   articleSelector: '.post',
   titleSelector: '.post-title',
@@ -58,11 +65,11 @@ function generateTitleLinks(customSelector = '') {
     const articleTitle = article.querySelector(opts.titleSelector).innerHTML;
 
     /* Create HTML code of the link */
-    const html =
-      `<li><a href="#${href}"><span>${articleTitle}</span></a></li>`;
+    const linkHTMLData = { id: href, title: articleTitle };
+    const linkHTML = templates.listLink(linkHTMLData);
 
     /* Inject new links into HTML */
-    linkList.innerHTML += html;
+    linkList.innerHTML += linkHTML;
   }
 
   const links = document.querySelectorAll('.titles a');
@@ -117,7 +124,8 @@ function generateTags() {
     for (let tag of tagsArray) {
       /* generate HTML of the link */
       /* add generated code to html variable */
-      const linkHTML = `<li><a href="#tag-${tag}">${tag}</a></li>`;
+      const linkHTMLData = { id: `tag-${tag}`, title: tag };
+      const linkHTML = templates.listLink(linkHTMLData);
       html += linkHTML;
       /* check if this link is NOT already in allTags */
       if (!allTags.hasOwnProperty(tag)) {
@@ -138,17 +146,18 @@ function generateTags() {
 
   /* create variable for all links HTML code */
   const tagsParams = calculateTagsParams(allTags);
-  let allTagsHTML = '';
+  const allTagsData = { tags: [] };
 
   /* START LOOP: for each tag in allTags */
   for (let tag in allTags) {
-    /* generate code of a link and add it to allTagsHTML */
-    allTagsHTML += `<li><a href="#tag-${tag}" class="${calculateTagClass(allTags[tag], tagsParams)}">${tag}</a></li> `;
+    allTagsData.tags.push({
+      tag: tag,
+      count: allTags[tag],
+      className: calculateTagClass(allTags[tag], tagsParams)
+    });
   }
   /* END LOOP: for each tag in allTags:*/
-
-  /* add html from allTags to tagList */
-  tagList.innerHTML = allTagsHTML;
+  tagList.innerHTML = templates.tagCloudLink(allTagsData);
 }
 
 generateTags();
@@ -159,31 +168,40 @@ function generateAuthors() {
   /* Add authors to articles */
   for (let article of articles) {
     const author = article.getAttribute('data-author');
-    let html = `<a href="#author-${author}">${author.replace('-', ' ')}</a>`;
-    article.querySelector(opts.articleAuthorSelector).innerHTML += html;
+    const authorLinkString = `author-${author}`;
+    const authorSpaceString = author.replace('-', ' ');
+    const linkHTMLData = { id: authorLinkString, title: authorSpaceString };
+    const linkHTML = templates.authorLink(linkHTMLData);
+    article.querySelector(opts.articleAuthorSelector).innerHTML += linkHTML;
+
   }
 
-  /* Add authors to the sidebar list */
-  let allAuthors = {};
+  /* Add authors to the sidebar list with templates */
+  const authors = {};
   for (let article of articles) {
     const author = article.getAttribute('data-author').replace('-', ' ');
-    if (!allAuthors.hasOwnProperty(author)) {
-      allAuthors[author] = 1;
+    if (!authors.hasOwnProperty(author)) {
+      authors[author] = 1;
     } else {
-      allAuthors[author]++;
+      authors[author]++;
     }
   }
 
-  const authorList = document.querySelector(opts.authorsListSelector);
-  let authorsSidebarHTML = '';
-  for (let author in allAuthors) {
-    authorsSidebarHTML += `<li><a href="#author-${author.replace(' ', '-')}" class="author">${author} (${allAuthors[author]})</a></li> `;
+  const authorsData = { authors: [] };
+  /* START LOOP: for each tag in allTags */
+  for (let author in authors) {
+    authorsData.authors.push({
+      authorNoSpace: author.replace(' ', '-'),
+      author: author,
+      count: authors[author]
+    });
+
+    const authorsList = document.querySelector(opts.authorsListSelector);
+    authorsList.innerHTML = templates.authorListLink(authorsData);
+
+    addClickListenersToAuthors();
   }
-  authorList.innerHTML = authorsSidebarHTML;
-
-  addClickListenersToAuthors();
 }
-
 generateAuthors();
 
 function addClickListenersToAuthors() {
